@@ -9,6 +9,9 @@ class usercls:
         self.created_at= data['created_at']
         self.updated_at = data['updated_at']
 
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
     @classmethod
     def get_all(cls):
         query = "SELECT * FROM users"
@@ -18,17 +21,25 @@ class usercls:
         for user in results:
             userlist.append(cls(user))
         return userlist
+
     @classmethod
     def create(cls, data):
         query = "INSERT INTO users (first_name, last_name, email) VALUES (%(first)s, %(last)s, %(email)s)"
         result = connectToMySQL("users_schema").query_db(query,data)
         return result
 
-    def get_one():
-        pass
+    @classmethod
+    def get_one(cls,id):
+        query = "SELECT * FROM users WHERE id = %(id)s";
+        result = connectToMySQL('users_schema').query_db(query,id)
+        return cls(result[0])
 
-    def update():
-        pass
+    @classmethod
+    def update(cls, data):
+        query ="UPDATE users SET first_name= %(first)s , last_name=%(last)s , email=%(email)s WHERE id = %(id)s;"
+        return connectToMySQL('users_schema').query_db(query, data)
 
-    def delete():
-        pass
+    @classmethod
+    def delete(cls, data):
+        query= "DELETE FROM users WHERE id = %(id)s;"
+        return connectToMySQL('users_schema').query_db(query, data)
